@@ -17,6 +17,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    NSString *identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    self.idLabel.text = identifier;
 }
 
 - (void)didReceiveMemoryWarning {

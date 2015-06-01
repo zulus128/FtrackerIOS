@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>BED84297-4D26-4444-9556-B136C25DFAD8</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Ftracker</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>E7CBEB8D38275F4785B99EDC73F4F80C74A97945</key>
+		<string>github.com:zulus128/FtrackerIOS.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Ftracker.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>E7CBEB8D38275F4785B99EDC73F4F80C74A97945</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:zulus128/FtrackerIOS.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>E7CBEB8D38275F4785B99EDC73F4F80C74A97945</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E7CBEB8D38275F4785B99EDC73F4F80C74A97945</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Ftracker</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -168,6 +168,11 @@
 				TargetAttributes = {
 					7E2F13AF1B1C301200ADE1D5 = {
 						CreatedOnToolsVersion = 6.3.2;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					7E2F13C81B1C301B00ADE1D5 = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -418,6 +423,7 @@
 				7E2F13D51B1C301B00ADE1D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7E2F13D61B1C301B00ADE1D5 /* Build configuration list for PBXNativeTarget "FtrackerTests" */ = {
 			isa = XCConfigurationList;
@@ -426,6 +432,7 @@
 				7E2F13D81B1C301B00ADE1D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
