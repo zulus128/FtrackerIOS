@@ -11,7 +11,7 @@
 
 @interface ViewController : UIViewController <CLLocationManagerDelegate> {
     
-    CLLocationManager *lm; //core lcoation manager instance
+//    CLLocationManager *lm; //core lcoation manager instance
     
 }
 
