@@ -18,10 +18,10 @@
     NSString *device = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
 
     NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
-    [dateFormater setDateFormat:@"yyyyMMDD_HHmmss"];
+    [dateFormater setDateFormat:@"yyyyMMdd_HHmmss"];
     NSString *convertedDateString = [dateFormater stringFromDate:[NSDate date]];
-
-    NSString* URL_ADD = [NSString stringWithFormat:@"/gps_track.php?device=%@&lat=%f&lon=%f&cl_time=%@&bat=0", device, lat, lon, convertedDateString];
+//    NSLog(@"--- %@", convertedDateString);
+    NSString* URL_ADD = [NSString stringWithFormat:@"/gps_track.php?device='%@'&lat='%f'&lon='%f'&cl_time='%@'&bat='-7'", device, lat, lon, convertedDateString];
     NSString* encodedUrl = [URL_ADD stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     [self sendURL:encodedUrl fromStore:NO];
 }
@@ -32,6 +32,7 @@
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSString* req = [URL stringByAppendingString:url_add];
+    NSLog(@"request0 = %@", req);
     [request setURL:[NSURL URLWithString:req]];
     BOOL b = NO;
     NSHTTPURLResponse* urlResponse = nil;
@@ -41,6 +42,8 @@
     if (!error) {
         
         b = YES;
+        NSLog(@"Success send to %@", URL);
+
     } else {
         NSLog(@"Failed send to %@", URL);
     }
@@ -48,6 +51,8 @@
     if(!b) {
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
         NSString* req = [URL1 stringByAppendingString:url_add];
+        NSLog(@"request1 = %@", req);
+
         [request setURL:[NSURL URLWithString:req]];
         NSHTTPURLResponse* urlResponse = nil;
         NSError *error = nil;
@@ -56,6 +61,7 @@
         if (!error) {
             
             b = YES;
+            NSLog(@"Success send to %@", URL1);
         } else {
             NSLog(@"Failed send to %@", URL1);
         }
