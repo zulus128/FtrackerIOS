@@ -5,6 +5,7 @@
 //  Created by VADIM KASSIN on 5/31/15.
 //  Copyright (c) 2015 VADIM KASSIN. All rights reserved.
 //http://mobileoop.com/getting-location-updates-for-ios-7-and-8-when-the-app-is-killedterminatedsuspended
+//http://www.raywenderlich.com/29948/backgrounding-for-ios
 
 #import "AppDelegate.h"
 

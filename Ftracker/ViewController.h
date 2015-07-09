@@ -10,9 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 
 @interface ViewController : UIViewController <CLLocationManagerDelegate> {
-    
-//    CLLocationManager *lm; //core lcoation manager instance
-    
+        
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *idLabel;
