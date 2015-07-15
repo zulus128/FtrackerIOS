@@ -8,6 +8,8 @@
 //http://www.raywenderlich.com/29948/backgrounding-for-ios
 
 #import "AppDelegate.h"
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 
 #define URL @"http://89.107.99.238:10356"
 #define URL1 @"http://192.168.2.168"
@@ -22,101 +24,169 @@
     [dateFormater setDateFormat:@"yyyyMMdd_HHmmss"];
     NSString *convertedDateString = [dateFormater stringFromDate:[NSDate date]];
 //    NSLog(@"--- %@", convertedDateString);
-    NSString* URL_ADD = [NSString stringWithFormat:@"/gps_track.php?device='%@'&lat='%f'&lon='%f'&cl_time='%@'&bat='-7'", device, lat, lon, convertedDateString];
+    NSString* URL_ADD = [NSString stringWithFormat:@"/gps_track.php?device='%@'&lat='%f'&lon='%f'&cl_time='%@'&bat='-17'", device, lat, lon, convertedDateString];
     NSString* encodedUrl = [URL_ADD stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     [self sendURL:encodedUrl fromStore:NO];
 }
 
-- (BOOL)sendURL:(NSString*)url_add fromStore:(BOOL)fromStore {
+- (void)sendURL:(NSString*)url_add fromStore:(BOOL)fromStore {
     
     NSLog(@"sendURL: %@ fromStore: %d", url_add, fromStore);
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSString* req = [URL stringByAppendingString:url_add];
-    NSLog(@"request0 = %@", req);
+//    NSLog(@"request0 = %@", req);
     [request setURL:[NSURL URLWithString:req]];
-    BOOL b = NO;
-    NSHTTPURLResponse* urlResponse = nil;
-    NSError *error = nil;
-    NSData* responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+//    BOOL b = NO;
+//    NSHTTPURLResponse* urlResponse = nil;
+//    NSError *error = nil;
+//    NSData* responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
     
-    if (!error) {
-        
-        b = YES;
-        NSLog(@"Success send to %@", URL);
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
 
-    } else {
-        NSLog(@"Failed send to %@", URL);
-    }
-
-    if(!b) {
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        NSString* req = [URL1 stringByAppendingString:url_add];
-        NSLog(@"request1 = %@", req);
-
-        [request setURL:[NSURL URLWithString:req]];
-        NSHTTPURLResponse* urlResponse = nil;
-        NSError *error = nil;
-        NSData* responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
-        
         if (!error) {
             
-            b = YES;
-            NSLog(@"Success send to %@", URL1);
+//            b = YES;
+            NSLog(@"Success send to %@", URL);
+            
+//            if(!fromStore) {
+            
+                [self sendStore];
+//            }
+
+            
         } else {
-            NSLog(@"Failed send to %@", URL1);
+
+            NSLog(@"Failed send to %@", URL);
+            
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+            NSString* req = [URL1 stringByAppendingString:url_add];
+//            NSLog(@"request1 = %@", req);
+            [request setURL:[NSURL URLWithString:req]];
+
+            NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+            [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                
+                if (!error) {
+                    
+                    NSLog(@"Success send to %@", URL1);
+
+//                    if(!fromStore) {
+                    
+                        [self sendStore];
+//                    }
+                    
+                } else {
+                    
+                    NSLog(@"Failed send to %@", URL1);
+                    
+//                    if(!fromStore) {
+                    
+                        [self addToStore:url_add];
+//                    }
+                }
+
+            }];
+
         }
-    }
+
+    }];
     
-    if(!fromStore) {
-        
-        if(!b)
-            [self addToStore:url_add];
-        else
-            [self sendStore];
-    }
+
+//    if(!b) {
+//        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+//        NSString* req = [URL1 stringByAppendingString:url_add];
+//        NSLog(@"request1 = %@", req);
+//
+//        [request setURL:[NSURL URLWithString:req]];
+//        NSHTTPURLResponse* urlResponse = nil;
+//        NSError *error = nil;
+//        NSData* responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+//        
+//        if (!error) {
+//            
+//            b = YES;
+//            NSLog(@"Success send to %@", URL1);
+//        } else {
+//            NSLog(@"Failed send to %@", URL1);
+//        }
+//    }
     
-    return b;
+//    if(!fromStore) {
+//        
+//        if(!b)
+//            [self addToStore:url_add];
+//        else
+//            [self sendStore];
+//    }
+//    
+//    return b;
 }
 
 
 - (void)sendStore {
     
-    NSMutableArray *newlist = [NSMutableArray array];
-    NSMutableArray *list = [self loadStoreFromFile];
-    for(NSString *url in list) {
-        if(![self sendURL:url fromStore:YES]) {
-            
-            [newlist addObject:url];
-        }
-    }
+//    NSMutableArray *newlist = [NSMutableArray array];
+//    NSMutableArray *list = [self loadStoreFromFile];
+    [self loadStoreFromFile];
     
-    [self saveStoreToFile:newlist];
+//    for(NSString *url in self.list) {
+//        if(![self sendURL:url fromStore:YES]) {
+//            
+//            [newlist addObject:url];
+//        }
+//    }
+
+    NSString *url = [self.list lastObject];
+    if(url) {
+    
+        [self.list removeObject:url];
+        [self saveStoreToFile];
+        [self sendURL:url fromStore:YES];
+    }
+//    [self saveStoreToFile:newlist];
+//    self.list = newlist;
+//    [self saveStoreToFile];
 }
 
 - (void)addToStore:(NSString*) url {
     
-    NSMutableArray* list = [self loadStoreFromFile];
-    [list addObject:url];
-    [self saveStoreToFile:list];
+//    NSMutableArray* list = [self loadStoreFromFile];
+    [self loadStoreFromFile];
+    [self.list addObject:url];
+//    [self saveStoreToFile:list];
+    [self saveStoreToFile];
 }
 
-- (void) saveStoreToFile:(NSMutableArray*)list {
+//- (void) saveStoreToFile:(NSMutableArray*)list {
+//    
+//    [[NSUserDefaults standardUserDefaults] setObject:list forKey:@"store"];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
+//}
+//
+//- (NSMutableArray*)loadStoreFromFile {
+//    
+//    NSMutableArray *l = [[NSUserDefaults standardUserDefaults] objectForKey:@"store"];
+//    return l;
+//}
+
+- (void) saveStoreToFile {
     
-    [[NSUserDefaults standardUserDefaults] setObject:list forKey:@"store"];
+    [[NSUserDefaults standardUserDefaults] setObject:self.list forKey:@"store"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (NSMutableArray*)loadStoreFromFile {
-
-    NSMutableArray *l = [[NSUserDefaults standardUserDefaults] objectForKey:@"store"];
-    return l;
+- (void)loadStoreFromFile {
+    
+    self.list = [[NSUserDefaults standardUserDefaults] objectForKey:@"store"];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
    
     NSLog(@"didFinishLaunchingWithOptions");
-    
+    [Fabric with:@[CrashlyticsKit]];
+
     self.shareModel = [LocationShareModel sharedModel];
     self.shareModel.afterResume = NO;
     

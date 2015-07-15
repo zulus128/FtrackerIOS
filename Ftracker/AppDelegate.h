@@ -12,7 +12,7 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate,CLLocationManagerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-
+@property (strong,nonatomic) NSMutableArray *list;
 @property (strong,nonatomic) LocationShareModel * shareModel;
 @property (nonatomic) CLLocationCoordinate2D myLastLocation;
 @property (nonatomic) CLLocationAccuracy myLastLocationAccuracy;

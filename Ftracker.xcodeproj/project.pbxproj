@@ -14,6 +14,8 @@
 		7E2F13C11B1C301B00ADE1D5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E2F13C01B1C301B00ADE1D5 /* Images.xcassets */; };
 		7E2F13C41B1C301B00ADE1D5 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E2F13C21B1C301B00ADE1D5 /* LaunchScreen.xib */; };
 		7E2F13D01B1C301B00ADE1D5 /* FtrackerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2F13CF1B1C301B00ADE1D5 /* FtrackerTests.m */; };
+		7EA055CF1B56323B00F091B3 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA055CD1B56323B00F091B3 /* Fabric.framework */; };
+		7EA055D01B56323B00F091B3 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA055CE1B56323B00F091B3 /* Crashlytics.framework */; };
 		7EEC02711B2D3D5F00CAF0C2 /* LocationShareModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EEC02701B2D3D5F00CAF0C2 /* LocationShareModel.m */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +43,8 @@
 		7E2F13C91B1C301B00ADE1D5 /* FtrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FtrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E2F13CE1B1C301B00ADE1D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7E2F13CF1B1C301B00ADE1D5 /* FtrackerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FtrackerTests.m; sourceTree = "<group>"; };
+		7EA055CD1B56323B00F091B3 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		7EA055CE1B56323B00F091B3 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		7EEC026F1B2D3D5F00CAF0C2 /* LocationShareModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationShareModel.h; sourceTree = "<group>"; };
 		7EEC02701B2D3D5F00CAF0C2 /* LocationShareModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationShareModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,6 +54,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EA055D01B56323B00F091B3 /* Crashlytics.framework in Frameworks */,
+				7EA055CF1B56323B00F091B3 /* Fabric.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +72,8 @@
 		7E2F13A71B1C301200ADE1D5 = {
 			isa = PBXGroup;
 			children = (
+				7EA055CD1B56323B00F091B3 /* Fabric.framework */,
+				7EA055CE1B56323B00F091B3 /* Crashlytics.framework */,
 				7E2F13B21B1C301200ADE1D5 /* Ftracker */,
 				7E2F13CC1B1C301B00ADE1D5 /* FtrackerTests */,
 				7E2F13B11B1C301200ADE1D5 /* Products */,
@@ -134,6 +142,7 @@
 				7E2F13AC1B1C301200ADE1D5 /* Sources */,
 				7E2F13AD1B1C301200ADE1D5 /* Frameworks */,
 				7E2F13AE1B1C301200ADE1D5 /* Resources */,
+				7EA055CC1B5631F400F091B3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -173,6 +182,7 @@
 				TargetAttributes = {
 					7E2F13AF1B1C301200ADE1D5 = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = 426QV2D7WG;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -223,6 +233,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7EA055CC1B5631F400F091B3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 61b97f836813051adca5ca79f27795ff58da96c5 cb21e610491f28b17202b44e90ce49c8b896a6a18bfa739a6f1d93aedfae1078";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7E2F13AC1B1C301200ADE1D5 /* Sources */ = {
@@ -360,10 +386,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Ftracker/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "8c3444f6-09d9-4303-b602-d69c9d8376b4";
 			};
 			name = Debug;
 		};
@@ -371,10 +403,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Ftracker/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "8c3444f6-09d9-4303-b602-d69c9d8376b4";
 			};
 			name = Release;
 		};
