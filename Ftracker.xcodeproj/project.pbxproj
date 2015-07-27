@@ -392,10 +392,11 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Ftracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "9f2d0eca-5f50-44c4-8b7a-993df1ce4e8f";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -409,10 +410,11 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Ftracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "9f2d0eca-5f50-44c4-8b7a-993df1ce4e8f";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
