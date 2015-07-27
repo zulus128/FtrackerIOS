@@ -7,8 +7,12 @@
 //
 
 #import "ViewController.h"
+#import "AppDelegate.h"
 
-@interface ViewController ()
+@interface ViewController () {
+
+    id _notificationObserver;
+}
 
 @end
 
@@ -20,11 +24,39 @@
     
     NSString *identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
     self.idLabel.text = identifier;
+    
+    _notificationObserver = [[NSNotificationCenter defaultCenter] addObserverForName:@"MessageIncoming" object:nil queue:[NSOperationQueue mainQueue]
+                                                                                           usingBlock:^(NSNotification *notification) {
+                                                                                               [self refresh];
+                                                                                           }];
 }
 
 - (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+}
+
+- (void)refresh {
+
+    self.textView.text = @"";
+    
+    AppDelegate* ad = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    [ad loadLogFromFile];
+    for (NSString *s in ad.log) {
+        
+        self.textView.text = [NSString stringWithFormat:@"%@---------------------------------------------\n%@\n", self.textView.text, s];
+    }
+
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+
+    [self refresh];
+}
+
+- (void)dealloc {
+
+    [[NSNotificationCenter defaultCenter] removeObserver:_notificationObserver];
 }
 
 @end

@@ -19,12 +19,10 @@
 - (void)sendToServerLat:(double)lat andLon:(double)lon {
 
     NSString *device = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-
     NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
     [dateFormater setDateFormat:@"yyyyMMdd_HHmmss"];
     NSString *convertedDateString = [dateFormater stringFromDate:[NSDate date]];
-//    NSLog(@"--- %@", convertedDateString);
-    NSString* URL_ADD = [NSString stringWithFormat:@"/gps_track.php?device='%@'&lat='%f'&lon='%f'&cl_time='%@'&bat='-17'", device, lat, lon, convertedDateString];
+    NSString* URL_ADD = [NSString stringWithFormat:@"/gps_track.php?device='%@'&lat='%f'&lon='%f'&cl_time='%@'&bat='-18'", device, lat, lon, convertedDateString];
     NSString* encodedUrl = [URL_ADD stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     [self sendURL:encodedUrl fromStore:NO];
 }
@@ -32,37 +30,29 @@
 - (void)sendURL:(NSString*)url_add fromStore:(BOOL)fromStore {
     
     NSLog(@"sendURL: %@ fromStore: %d", url_add, fromStore);
+    [self customLog:[NSString stringWithFormat:@"sendURL: %@ fromStore: %d", url_add, fromStore]];
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSString* req = [URL stringByAppendingString:url_add];
-//    NSLog(@"request0 = %@", req);
     [request setURL:[NSURL URLWithString:req]];
-//    BOOL b = NO;
-//    NSHTTPURLResponse* urlResponse = nil;
-//    NSError *error = nil;
-//    NSData* responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
 
         if (!error) {
             
-//            b = YES;
             NSLog(@"Success send to %@", URL);
+            [self customLog:[NSString stringWithFormat:@"Success send to %@", URL]];
             
-//            if(!fromStore) {
-            
-                [self sendStore];
-//            }
-
+            [self sendStore];
             
         } else {
 
-            NSLog(@"Failed send to %@", URL);
+            NSLog(@"Failed send to %@ %@", URL, [error localizedDescription]);
+            [self customLog:[NSString stringWithFormat:@"Failed send to %@", URL]];
             
             NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
             NSString* req = [URL1 stringByAppendingString:url_add];
-//            NSLog(@"request1 = %@", req);
             [request setURL:[NSURL URLWithString:req]];
 
             NSOperationQueue *queue = [[NSOperationQueue alloc] init];
@@ -71,73 +61,27 @@
                 if (!error) {
                     
                     NSLog(@"Success send to %@", URL1);
+                    [self customLog:[NSString stringWithFormat:@"Success send to %@", URL1]];
 
-//                    if(!fromStore) {
-                    
-                        [self sendStore];
-//                    }
+                    [self sendStore];
                     
                 } else {
                     
-                    NSLog(@"Failed send to %@", URL1);
-                    
-//                    if(!fromStore) {
-                    
-                        [self addToStore:url_add];
-//                    }
+                    NSLog(@"Failed send to %@ %@", URL1, [error localizedDescription]);
+                    [self customLog:[NSString stringWithFormat:@"Failed send to %@", URL1]];
+
+                    [self addToStore:url_add];
                 }
-
             }];
-
         }
-
     }];
-    
-
-//    if(!b) {
-//        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-//        NSString* req = [URL1 stringByAppendingString:url_add];
-//        NSLog(@"request1 = %@", req);
-//
-//        [request setURL:[NSURL URLWithString:req]];
-//        NSHTTPURLResponse* urlResponse = nil;
-//        NSError *error = nil;
-//        NSData* responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
-//        
-//        if (!error) {
-//            
-//            b = YES;
-//            NSLog(@"Success send to %@", URL1);
-//        } else {
-//            NSLog(@"Failed send to %@", URL1);
-//        }
-//    }
-    
-//    if(!fromStore) {
-//        
-//        if(!b)
-//            [self addToStore:url_add];
-//        else
-//            [self sendStore];
-//    }
-//    
-//    return b;
 }
 
 
 - (void)sendStore {
     
-//    NSMutableArray *newlist = [NSMutableArray array];
-//    NSMutableArray *list = [self loadStoreFromFile];
     [self loadStoreFromFile];
     
-//    for(NSString *url in self.list) {
-//        if(![self sendURL:url fromStore:YES]) {
-//            
-//            [newlist addObject:url];
-//        }
-//    }
-
     NSString *url = [self.list lastObject];
     if(url) {
     
@@ -145,33 +89,16 @@
         [self saveStoreToFile];
         [self sendURL:url fromStore:YES];
     }
-//    [self saveStoreToFile:newlist];
-//    self.list = newlist;
-//    [self saveStoreToFile];
 }
 
 - (void)addToStore:(NSString*) url {
     
-//    NSMutableArray* list = [self loadStoreFromFile];
     [self loadStoreFromFile];
     [self.list addObject:url];
-//    [self saveStoreToFile:list];
     [self saveStoreToFile];
 }
 
-//- (void) saveStoreToFile:(NSMutableArray*)list {
-//    
-//    [[NSUserDefaults standardUserDefaults] setObject:list forKey:@"store"];
-//    [[NSUserDefaults standardUserDefaults] synchronize];
-//}
-//
-//- (NSMutableArray*)loadStoreFromFile {
-//    
-//    NSMutableArray *l = [[NSUserDefaults standardUserDefaults] objectForKey:@"store"];
-//    return l;
-//}
-
-- (void) saveStoreToFile {
+- (void)saveStoreToFile {
     
     [[NSUserDefaults standardUserDefaults] setObject:self.list forKey:@"store"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -179,18 +106,47 @@
 
 - (void)loadStoreFromFile {
     
-    self.list = [[NSUserDefaults standardUserDefaults] objectForKey:@"store"];
+    self.list = [[[NSUserDefaults standardUserDefaults] objectForKey:@"store"] mutableCopy];
+    if(!self.list)
+        self.list = [NSMutableArray array];
+}
+
+- (void)saveLogToFile {
+    
+    [[NSUserDefaults standardUserDefaults] setObject:self.log forKey:@"log"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)loadLogFromFile {
+    
+    self.log = [[[NSUserDefaults standardUserDefaults] objectForKey:@"log"] mutableCopy];
+    if(!self.log)
+        self.log = [NSMutableArray array];
+}
+
+- (void)customLog:(NSString *)str {
+    
+    NSDate *now = [NSDate date];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"YY.MM.DD hh:mm:ss";
+    [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+    [self loadLogFromFile];
+    [self.log addObject:[NSString stringWithFormat:@"%@, %@", [dateFormatter stringFromDate:now], str]];
+    [self saveLogToFile];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"MessageIncoming" object:nil userInfo:nil];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
    
     NSLog(@"didFinishLaunchingWithOptions");
+    [self customLog:@"didFinishLaunchingWithOptions"];
+
     [Fabric with:@[CrashlyticsKit]];
 
     self.shareModel = [LocationShareModel sharedModel];
     self.shareModel.afterResume = NO;
     
-//    [self addApplicationStatusToPList:@"didFinishLaunchingWithOptions"];
     
     UIAlertView * alert;
     
@@ -224,8 +180,10 @@
         // the app has been killed/terminated (Not in th background) by iOS or the user.
         
         if ([launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
-            NSLog(@"UIApplicationLaunchOptionsLocationKey");
             
+            NSLog(@"UIApplicationLaunchOptionsLocationKey");
+            [self customLog:@"UIApplicationLaunchOptionsLocationKey"];
+
             // This "afterResume" flag is just to show that he receiving location updates
             // are actually from the key "UIApplicationLaunchOptionsLocationKey"
             self.shareModel.afterResume = YES;
@@ -254,8 +212,9 @@
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
     
     NSLog(@"locationManager didUpdateLocations: %@",locations);
+    [self customLog:[NSString stringWithFormat:@"locationManager didUpdateLocations: %@",locations]];
     
-    for(int i=0;i<locations.count;i++){
+    for(int i = 0; i < locations.count; i++){
         
         CLLocation * newLocation = [locations objectAtIndex:i];
         CLLocationCoordinate2D theLocation = newLocation.coordinate;
@@ -270,9 +229,11 @@
 }
 
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    
     NSLog(@"applicationDidEnterBackground");
+    [self customLog:@"applicationDidEnterBackground"];
+
     [self.shareModel.anotherLocationManager stopMonitoringSignificantLocationChanges];
     
     if(IS_OS_8_OR_LATER) {
@@ -280,22 +241,21 @@
     }
     [self.shareModel.anotherLocationManager startMonitoringSignificantLocationChanges];
     
-//    [self addApplicationStatusToPList:@"applicationDidEnterBackground"];
 }
 
 
 
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    
     NSLog(@"applicationDidBecomeActive");
-    
-//    [self addApplicationStatusToPList:@"applicationDidBecomeActive"];
-    
-    //Remove the "afterResume" Flag after the app is active again.
+    [self customLog:@"applicationDidBecomeActive"];
+
     self.shareModel.afterResume = NO;
     
-    if(self.shareModel.anotherLocationManager)
+    if(self.shareModel.anotherLocationManager) {
+        
         [self.shareModel.anotherLocationManager stopMonitoringSignificantLocationChanges];
+    }
     
     self.shareModel.anotherLocationManager = [[CLLocationManager alloc]init];
     self.shareModel.anotherLocationManager.delegate = self;
@@ -303,173 +263,25 @@
     self.shareModel.anotherLocationManager.activityType = CLActivityTypeOtherNavigation;
     
     if(IS_OS_8_OR_LATER) {
+        
         [self.shareModel.anotherLocationManager requestAlwaysAuthorization];
     }
+    
     [self.shareModel.anotherLocationManager startMonitoringSignificantLocationChanges];
 }
 
 -(void)applicationWillTerminate:(UIApplication *)application {
     
     NSLog(@"applicationWillTerminate");
-//    [self addApplicationStatusToPList:@"applicationWillTerminate"];
+    [self customLog:@"applicationWillTerminate"];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+
 }
-
-///////////////////////////////////////////////////////////////
-// Below are 3 functions that add location and Application status to PList
-// The purpose is to collect location information locally
-
-//-(void)addResumeLocationToPList{
-//    
-//    NSLog(@"addResumeLocationToPList");
-//    UIApplication* application = [UIApplication sharedApplication];
-//    
-//    NSString * appState;
-//    if([application applicationState]==UIApplicationStateActive)
-//        appState = @"UIApplicationStateActive";
-//    if([application applicationState]==UIApplicationStateBackground)
-//        appState = @"UIApplicationStateBackground";
-//    if([application applicationState]==UIApplicationStateInactive)
-//        appState = @"UIApplicationStateInactive";
-//    
-//    self.shareModel.myLocationDictInPlist = [[NSMutableDictionary alloc]init];
-//    [self.shareModel.myLocationDictInPlist setObject:@"UIApplicationLaunchOptionsLocationKey" forKey:@"Resume"];
-//    [self.shareModel.myLocationDictInPlist setObject:appState forKey:@"AppState"];
-//    [self.shareModel.myLocationDictInPlist setObject:[NSDate date] forKey:@"Time"];
-//    
-//    NSString *plistName = [NSString stringWithFormat:@"LocationArray.plist"];
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *docDir = [paths objectAtIndex:0];
-//    NSString *fullPath = [NSString stringWithFormat:@"%@/%@", docDir, plistName];
-//    
-//    NSMutableDictionary *savedProfile = [[NSMutableDictionary alloc] initWithContentsOfFile:fullPath];
-//    
-//    if (!savedProfile){
-//        savedProfile = [[NSMutableDictionary alloc] init];
-//        self.shareModel.myLocationArrayInPlist = [[NSMutableArray alloc]init];
-//    }
-//    else{
-//        self.shareModel.myLocationArrayInPlist = [savedProfile objectForKey:@"LocationArray"];
-//    }
-//    
-//    if(self.shareModel.myLocationDictInPlist)
-//    {
-//        [self.shareModel.myLocationArrayInPlist addObject:self.shareModel.myLocationDictInPlist];
-//        [savedProfile setObject:self.shareModel.myLocationArrayInPlist forKey:@"LocationArray"];
-//    }
-//    
-//    if (![savedProfile writeToFile:fullPath atomically:FALSE] ) {
-//        NSLog(@"Couldn't save LocationArray.plist" );
-//    }
-//}
-//
-//-(void)addLocationToPList:(BOOL)fromResume{
-//    NSLog(@"addLocationToPList");
-//    
-//    UIApplication* application = [UIApplication sharedApplication];
-//    
-//    NSString * appState;
-//    if([application applicationState]==UIApplicationStateActive)
-//        appState = @"UIApplicationStateActive";
-//    if([application applicationState]==UIApplicationStateBackground)
-//        appState = @"UIApplicationStateBackground";
-//    if([application applicationState]==UIApplicationStateInactive)
-//        appState = @"UIApplicationStateInactive";
-//    
-//    self.shareModel.myLocationDictInPlist = [[NSMutableDictionary alloc]init];
-//    [self.shareModel.myLocationDictInPlist setObject:[NSNumber numberWithDouble:self.myLocation.latitude]  forKey:@"Latitude"];
-//    [self.shareModel.myLocationDictInPlist setObject:[NSNumber numberWithDouble:self.myLocation.longitude] forKey:@"Longitude"];
-//    [self.shareModel.myLocationDictInPlist setObject:[NSNumber numberWithDouble:self.myLocationAccuracy] forKey:@"Accuracy"];
-//    
-//    [self.shareModel.myLocationDictInPlist setObject:appState forKey:@"AppState"];
-//    
-//    if(fromResume)
-//        [self.shareModel.myLocationDictInPlist setObject:@"YES" forKey:@"AddFromResume"];
-//    else
-//        [self.shareModel.myLocationDictInPlist setObject:@"NO" forKey:@"AddFromResume"];
-//    
-//    [self.shareModel.myLocationDictInPlist setObject:[NSDate date] forKey:@"Time"];
-//    
-//    NSString *plistName = [NSString stringWithFormat:@"LocationArray.plist"];
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *docDir = [paths objectAtIndex:0];
-//    NSString *fullPath = [NSString stringWithFormat:@"%@/%@", docDir, plistName];
-//    
-//    NSMutableDictionary *savedProfile = [[NSMutableDictionary alloc] initWithContentsOfFile:fullPath];
-//    
-//    if (!savedProfile){
-//        savedProfile = [[NSMutableDictionary alloc] init];
-//        self.shareModel.myLocationArrayInPlist = [[NSMutableArray alloc]init];
-//    }
-//    else{
-//        self.shareModel.myLocationArrayInPlist = [savedProfile objectForKey:@"LocationArray"];
-//    }
-//    
-//    NSLog(@"Dict: %@",self.shareModel.myLocationDictInPlist);
-//    
-//    if(self.shareModel.myLocationDictInPlist)
-//    {
-//        [self.shareModel.myLocationArrayInPlist addObject:self.shareModel.myLocationDictInPlist];
-//        [savedProfile setObject:self.shareModel.myLocationArrayInPlist forKey:@"LocationArray"];
-//    }
-//    
-//    if (![savedProfile writeToFile:fullPath atomically:FALSE] ) {
-//        NSLog(@"Couldn't save LocationArray.plist" );
-//    }
-//}
-//
-//
-//
-//-(void)addApplicationStatusToPList:(NSString*)applicationStatus{
-//    
-//    NSLog(@"addApplicationStatusToPList");
-//    UIApplication* application = [UIApplication sharedApplication];
-//    
-//    NSString * appState;
-//    if([application applicationState]==UIApplicationStateActive)
-//        appState = @"UIApplicationStateActive";
-//    if([application applicationState]==UIApplicationStateBackground)
-//        appState = @"UIApplicationStateBackground";
-//    if([application applicationState]==UIApplicationStateInactive)
-//        appState = @"UIApplicationStateInactive";
-//    
-//    self.shareModel.myLocationDictInPlist = [[NSMutableDictionary alloc]init];
-//    [self.shareModel.myLocationDictInPlist setObject:applicationStatus forKey:@"applicationStatus"];
-//    [self.shareModel.myLocationDictInPlist setObject:appState forKey:@"AppState"];
-//    [self.shareModel.myLocationDictInPlist setObject:[NSDate date] forKey:@"Time"];
-//    
-//    NSString *plistName = [NSString stringWithFormat:@"LocationArray.plist"];
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *docDir = [paths objectAtIndex:0];
-//    NSString *fullPath = [NSString stringWithFormat:@"%@/%@", docDir, plistName];
-//    
-//    NSMutableDictionary *savedProfile = [[NSMutableDictionary alloc] initWithContentsOfFile:fullPath];
-//    
-//    if (!savedProfile){
-//        savedProfile = [[NSMutableDictionary alloc] init];
-//        self.shareModel.myLocationArrayInPlist = [[NSMutableArray alloc]init];
-//    }
-//    else{
-//        self.shareModel.myLocationArrayInPlist = [savedProfile objectForKey:@"LocationArray"];
-//    }
-//    
-//    if(self.shareModel.myLocationDictInPlist)
-//    {
-//        [self.shareModel.myLocationArrayInPlist addObject:self.shareModel.myLocationDictInPlist];
-//        [savedProfile setObject:self.shareModel.myLocationArrayInPlist forKey:@"LocationArray"];
-//    }
-//    
-//    if (![savedProfile writeToFile:fullPath atomically:FALSE] ) {
-//        NSLog(@"Couldn't save LocationArray.plist" );
-//    }
-//}
 
 @end

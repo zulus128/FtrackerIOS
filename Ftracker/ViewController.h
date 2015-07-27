@@ -14,6 +14,7 @@
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *idLabel;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
 
 @end
 
