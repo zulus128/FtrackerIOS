@@ -228,6 +228,17 @@
     [self sendToServerLat:self.myLocation.latitude andLon:self.myLocation.longitude];
 }
 
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
+    
+    NSLog(@"error: %@",[error localizedDescription]);
+    [self customLog:[NSString stringWithFormat:@"error: %@",[error localizedDescription]]];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didFinishDeferredUpdatesWithError:(NSError *)error {
+
+    NSLog(@"error1: %@",[error localizedDescription]);
+    [self customLog:[NSString stringWithFormat:@"error1: %@",[error localizedDescription]]];
+}
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     
@@ -268,6 +279,10 @@
     }
     
     [self.shareModel.anotherLocationManager startMonitoringSignificantLocationChanges];
+    
+    NSLog(@"created");
+    [self customLog:@"created"];
+
 }
 
 -(void)applicationWillTerminate:(UIApplication *)application {
